@@ -9,11 +9,16 @@
   //GPOUT CROSSOVER AND INPUT_PULLUP ARDUINO
   int Reserva_1 = 8;
   int Reserva_2 = 9;
-  int Change_Over = 13;
+  //GPOUT Protection Switch and INPUT_PULLUP
+  int Chg_Primary_Active = 13;
+  int Chg_Secondary_Active = 14;
+
   //GPOUT ARDUINO AND SEALEVEL
   int Play = A0;
   int Stop_CueNext = A2;
-  int chg;
+  int Chg_Primary;
+  int Chg_Secondary;
+
 #pragma endregion 
 
 void setup()
@@ -23,7 +28,8 @@ void setup()
   pinMode(Titular_2, INPUT_PULLUP);
   pinMode(Reserva_1, INPUT_PULLUP);
   pinMode(Reserva_2, INPUT_PULLUP);
-  pinMode(Change_Over, INPUT_PULLUP);
+  pinMode(Chg_Primary_Active, INPUT_PULLUP);
+  pinMode(Chg_Secondary_Active, INPUT_PULLUP);
   pinMode(Play, OUTPUT);
   pinMode(Stop_CueNext, OUTPUT);
 }
@@ -88,12 +94,15 @@ void loop()
   String _Titular_2 = Read(Titular_2, true);
   String _Reserva_1 = Read(Reserva_1, true);
   String _Reserva_2 = Read(Reserva_2, true);
-  chg = digitalRead(Change_Over);
-  if ( chg == 1 ){
+
+  Chg_Primary = digitalRead(Chg_Primary_Active);
+  Chg_Secondary = digitalRead(Chg_Secondary_Active);
+
+  if( Chg_Primary == 1  && Chg_Secondary != 1){
    Serial.println("Seleção Change over: TITULAR");
    Write(Titular_1, Titular_2, true);
   }
-  else{
+  if( Chg_Primary != 1  && Chg_Secondary == 1){
    Serial.println("Seleção Change over: RESERVA");
    Write(Reserva_1, Reserva_2, true);
   }
